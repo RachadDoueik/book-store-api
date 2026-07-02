@@ -28,11 +28,11 @@ services:
       timeout: 3s
       retries: 5
   db:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: bookshop-db
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-bookshop}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookshop}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-bookshop}
     ports:
       - "127.0.0.1:5432:5432"

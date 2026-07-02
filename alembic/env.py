@@ -9,77 +9,45 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
-
+# Path setup
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DOTENV_PATH = os.path.join(BASE_DIR, ".env")
 
-
 def load_dotenv(path: str) -> None:
-    """Populate os.environ from a .env file without overwriting existing values."""
+    """Populate os.environ from a .env file."""
     if not os.path.exists(path):
         return
-
     with open(path, "r") as handle:
         for line in handle:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
             key, _, value = line.partition("=")
-            if not key or not _:
-                continue
-            if key not in os.environ:
+            if key and _ and key not in os.environ:
                 os.environ[key] = value.strip().strip('"').strip("'")
 
-
-# Load environment variables for migrations (only if not already set).
+# Load environment variables
 load_dotenv(DOTENV_PATH)
 
-# Ensure the app package is importable when Alembic runs from alembic/.
+# Ensure app is importable
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-from app import models  # noqa: E402
-
+from app import models 
 config = context.config
-
-DOTENV_PATH = os.path.join(BASE_DIR, ".env")
-
-
-def load_dotenv(path: str) -> None:
-    """Populate os.environ from a .env file without overwriting existing values."""
-    if not os.path.exists(path):
-        return
-
-    with open(path, "r") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            key, _, value = line.partition("=")
-            if not key or not _:
-                continue
-            if key not in os.environ:
-                os.environ[key] = value.strip().strip('"').strip("'")
-
-
-# Load environment variables for migrations (only if not already set).
-load_dotenv(DOTENV_PATH)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-
 def get_database_url() -> str:
-    """Return database URL for Alembic, falling back to a local default."""
-    return os.getenv(
-        "DATABASE_URL",
-        "postgresql+asyncpg://bookshop:bookshop@localhost:5432/bookshop",
-    )
+    """Return database URL from env."""
+    url = os.getenv("DATABASE_URL")
+    if not url:
+        raise ValueError("DATABASE_URL is not set in environment or .env file")
+    return url
 
-
+# Set the URL dynamically
 config.set_main_option("sqlalchemy.url", get_database_url())
-
-# Use model metadata so autogenerate can detect schema changes.
 target_metadata = models.Base.metadata
 
 
