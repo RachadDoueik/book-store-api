@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     RATE_LIMIT_STORAGE_URI: str
     SENTRY_DSN: str = ""
     ALLOWED_ORIGINS: list[str] = ["*"]
+    GEMINI_API_KEY: str
 
     # Load from .env during local development and ignore unknown variables.
     model_config = SettingsConfigDict(

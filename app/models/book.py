@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from pgvector.sqlalchemy import Vector
+from sqlalchemy.dialects.postgresql import TSVECTOR
+
 from .author import book_authors
 from .base import BaseModel
 
@@ -31,6 +34,9 @@ class Book(BaseModel):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     isbn: Mapped[str | None] = mapped_column(String(32), nullable=True, unique=True, index=True)
     stock: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(768), nullable=True)
+    search_vector: Mapped[TSVECTOR | None] = mapped_column(TSVECTOR, nullable=True)
+    
 
     # Authors is many-to-many; dependent items are deleted with the book.
     authors: Mapped[list["Author"]] = relationship(
