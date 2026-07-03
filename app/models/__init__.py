@@ -8,6 +8,7 @@ from .order import Order, OrderItem
 from .role import Role
 from .user import User
 from .wishlist import Wishlist, WishlistItem
+from .embedding_job import EmbeddingJob
 
 # Re-export models for convenient imports.
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
 	"User",
 	"Wishlist",
 	"WishlistItem",
+    "EmbeddingJob"
 ]
