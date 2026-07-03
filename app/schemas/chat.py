@@ -44,7 +44,6 @@ class BookContext(BaseModel):
     Built from the Book ORM object with its relationships already loaded.
 
     Note: authors is a list because Book has a many-to-many with Author.
-    There is no page_count column on Book.
     """
     id: str
     title: str

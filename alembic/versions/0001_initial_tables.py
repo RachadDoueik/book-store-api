@@ -40,6 +40,7 @@ def upgrade() -> None:
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("isbn", sa.String(length=32), nullable=True),
         sa.Column("stock", sa.Integer(), nullable=False, default=0),
+        sa.Column("page_count" , sa.Integer() , nullable=False , default = 0),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
