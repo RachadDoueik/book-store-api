@@ -48,6 +48,7 @@ class BookContext(BaseModel):
     id: str
     title: str
     authors: list[str]          # ["Author One", "Author Two"]
+    page_count : int | None
     description: str | None
     category: str | None        # category name resolved from relationship
     price: float | None

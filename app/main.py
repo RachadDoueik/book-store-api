@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 import sentry_sdk
 import structlog
+import asyncio
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
@@ -23,6 +24,10 @@ from app.core.inventory_cache import build_inventory_cache
 from app.core.limiter import limiter
 from app.core.refresh_token_store import build_refresh_token_store
 from app.core.realtime import WebSocketHub
+
+from app.core.database import AsyncSessionFactory
+from app.services.embedding.service import EmbeddingService
+from app.services.workers.embedding_worker import run_worker
 
 
 logger = structlog.get_logger()
@@ -127,7 +132,25 @@ def create_app() -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         logger.info("app.startup", service=settings.APP_NAME)
+
+        # ADD: start the embedding worker as a background task
+        _embedding_db = AsyncSessionFactory()
+        _embedding_service = EmbeddingService()
+        _worker_task = asyncio.create_task(
+            run_worker(_embedding_db, _embedding_service)
+        )
+
         yield
+
+        # ADD: shut the worker down gracefully
+        _worker_task.cancel()
+        try:
+            await _worker_task
+        except asyncio.CancelledError:
+            pass
+        await _embedding_db.close()
+
+        # your existing shutdown code stays unchanged:
         inventory_cache = getattr(app.state, "inventory_cache", None)
         if inventory_cache is not None:
             await inventory_cache.close()
@@ -135,6 +158,7 @@ def create_app() -> FastAPI:
         if refresh_store is not None:
             await refresh_store.close()
         logger.info("app.shutdown", service=settings.APP_NAME)
+        
 
     app = FastAPI(
         title=settings.APP_NAME,

@@ -14,7 +14,6 @@ dependencies = [
     "python-jose[cryptography]",
     "passlib[bcrypt]",
     "redis",
-    "celery",
     "structlog",
     "sentry-sdk[fastapi]",
     "slowapi",
@@ -22,5 +21,6 @@ dependencies = [
     "pytest",
     "pytest-asyncio",
     "python-multipart",
-    "pgvector"
+    "pgvector",
+    "google-genai"
 ]
