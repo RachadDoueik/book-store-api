@@ -10,8 +10,8 @@ from app.services.llm.base import LLMProvider
 
 logger = logging.getLogger(__name__)
 
-# gemini-2.0-flash-lite: fast, free tier, sufficient for bookshop chat
-GENERATION_MODEL = "gemini-2.5-flash-lite"
+# gemini-3.5-flash-lite
+GENERATION_MODEL = "gemini-3.1-flash-lite"
 
 
 def _to_gemini_contents(messages: list[ChatMessage]) -> list[types.Content]:

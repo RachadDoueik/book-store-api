@@ -52,7 +52,8 @@ class BookContext(BaseModel):
     description: str | None
     category: str | None        # category name resolved from relationship
     price: float | None
-    in_stock: bool
+    stock: int | None 
+    in_stock: bool | None
     isbn: str | None
     release_date: str | None    # ISO date string e.g. "2021-03-15"
     source: RetrievalRoute
