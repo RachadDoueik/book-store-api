@@ -34,6 +34,7 @@ def _book_to_context(
         category=book.category.name if book.category else None,
         price=float(book.price) if book.price is not None else None,
         in_stock=book.stock > 0,
+        stock=book.stock,
         isbn=book.isbn,
         release_date=str(book.release_date) if book.release_date else None,
         source=route,
